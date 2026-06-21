@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { calculateConstructionCost } from '../utils/calculations'
 
 export default function ConstructionCalculator() {
     const startYear = 2026;
@@ -26,6 +27,41 @@ export default function ConstructionCalculator() {
     const [isMezzaine, setIsMezzaine] = useState("no");
     const [isBasement, setIsBasement] = useState("no");
     const [isDuctAirConditioning, setIsDuctAirConditioning] = useState("no");
+
+    // Perform cost calculation if basic fields are populated
+    const hasRequiredInputs = 
+        selectedYear && 
+        selectedInvestmentPropertyType && 
+        selectedInvestmentPropertyState && 
+        floorArea > 0 && 
+        numberOfFloors > 0 &&
+        // For residential types, wallType is required
+        ((selectedInvestmentPropertyType !== "House" && 
+          selectedInvestmentPropertyType !== "Granny Flat" && 
+          selectedInvestmentPropertyType !== "Townhouse") || selectedWallType);
+
+    const results = hasRequiredInputs ? calculateConstructionCost({
+        propertyType: selectedInvestmentPropertyType,
+        state: selectedInvestmentPropertyState,
+        year: selectedYear,
+        wallType: selectedWallType,
+        bedrooms: numberOfBedrooms,
+        floors: numberOfFloors,
+        floorArea: floorArea,
+        hasBasement: isBasement === "yes",
+        hasDucted: isDuctAirConditioning === "yes",
+        hasMezzanine: isMezzaine === "yes",
+        hasElevator: isElevator === "yes",
+        finishLevel: selectedSpecFinishLevel
+    }) : {
+        lowEstimate: 0,
+        midEstimate: 0,
+        highEstimate: 0,
+        selectedEstimate: 0,
+        bci: 1,
+        baseWithoutElevator: 0,
+        elevatorAllowance: 0
+    };
 
 
     return (
@@ -94,7 +130,7 @@ export default function ConstructionCalculator() {
                             onChange={e => setSpecFinishLevel(e.target.value)}
                     >
                         <option value="" disabled hidden>Select...</option>
-                        {buildTypes.map(i => (
+                        {specFinishLevels.map(i => (
                             <option key={i} value={i}>{i}</option>
                         ))}
                     </select>
@@ -217,19 +253,72 @@ export default function ConstructionCalculator() {
                 </div>
                 <div className="flex-1 p-10 flex flex-col sticky gap-5">
                     <h1 className="text-2xl font-bold">Results</h1>
-                    <div className="border-1 rounded-md bg-orange font-white flex p-3">
-                        <span>Finished (selected)</span><span className="text-xl ml-auto">$0</span>
+                    <div className="border-1 rounded-md bg-orange-400 text-white flex p-3">
+                        <span>Finished (selected)</span>
+                        <span className="text-xl font-bold ml-auto">
+                            {results.selectedEstimate ? `$${results.selectedEstimate.toLocaleString()}` : '$0'}
+                        </span>
                     </div>
-                    <div className="border-1 rounded-md font-white flex p-3">
-                        <span>Low estimate</span><span className="text-xl ml-auto">$0</span>
+                    <div className="border-1 rounded-md bg-gray-100 flex p-3">
+                        <span>Low estimate</span>
+                        <span className="text-xl font-bold ml-auto">
+                            {results.lowEstimate ? `$${results.lowEstimate.toLocaleString()}` : '$0'}
+                        </span>
                     </div>
-                    <div className="border-1 rounded-md font-white flex p-3">
-                        <span>High estimate</span><span className="text-xl ml-auto">$0</span>
+                    <div className="border-1 rounded-md bg-gray-100 flex p-3">
+                        <span>High estimate</span>
+                        <span className="text-xl font-bold ml-auto">
+                            {results.highEstimate ? `$${results.highEstimate.toLocaleString()}` : '$0'}
+                        </span>
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold border-b-1 mb-2">How your estimate is calculated</h2>
+                        {!hasRequiredInputs ? (
+                            <p className="text-gray-500 text-sm">Enter your details to see a step‑by‑step calculation breakdown.</p>
+                        ) : (
+                            <div className="flex flex-col gap-3 text-sm text-gray-700">
+                                <div className="bg-gray-50 border rounded-lg p-3">
+                                    <div className="font-semibold mb-1">Your inputs</div>
+                                    <div>Type: <strong>{selectedInvestmentPropertyType.toLowerCase()}</strong> · Bedrooms: <strong>{numberOfBedrooms}</strong> · Storeys: <strong>{numberOfFloors}</strong> · Area: <strong>{floorArea} m²</strong></div>
+                                    <div>Wall: <strong>{selectedWallType || '-'}</strong> · Spec: <strong>{selectedSpecFinishLevel}</strong></div>
+                                    <div>Location & year: <strong>{selectedInvestmentPropertyState === "Victoria" ? "VIC" : selectedInvestmentPropertyState === "Queensland" ? "QLD" : selectedInvestmentPropertyState === "New South Wales" ? "NSW" : selectedInvestmentPropertyState === "South Australia" ? "SA" : selectedInvestmentPropertyState === "Western Australia" ? "WA" : selectedInvestmentPropertyState === "Tasmania" ? "TAS" : selectedInvestmentPropertyState === "Northern Territory" ? "NT" : selectedInvestmentPropertyState === "Australian Capital Territory" ? "ACT" : selectedInvestmentPropertyState}</strong>, <strong>{selectedYear}</strong> (index <strong>{results.bci.toFixed(3)}</strong>)</div>
+                                    <div>Options chosen: Ducted <strong>{isDuctAirConditioning === 'yes' ? 'Yes' : 'No'}</strong> · Basement <strong>{isBasement === 'yes' ? 'Yes' : 'No'}</strong> · Mezzanine <strong>{isMezzaine === 'yes' ? 'Yes' : 'No'}</strong> · Elevator <strong>{isElevator === 'yes' ? 'Yes' : 'No'}</strong></div>
+                                </div>
+                                <div className="bg-gray-50 border rounded-lg p-3">
+                                    <div className="font-semibold mb-1">How we calculated it</div>
+                                    <div>1) Core build cost based on your type, walls, size, bedrooms and storeys.</div>
+                                    <div className="text-gray-900">Estimated core (incl. options except elevator) after location/year = <strong>${results.baseWithoutElevator.toLocaleString()}</strong></div>
+                                    {isElevator === "yes" && (
+                                        <>
+                                            <div className="mt-2">2) Elevator allowance added for multi‑storey access.</div>
+                                            <div className="text-gray-900">Elevator add after location/year = <strong>${results.elevatorAllowance.toLocaleString()}</strong></div>
+                                        </>
+                                    )}
+                                    <div className="mt-2">{isElevator === "yes" ? '3' : '2'}) Finish level shown as Low / Selected finish / High.</div>
+                                </div>
+                                <div className="bg-gray-50 border rounded-lg p-3">
+                                    <div className="font-semibold mb-1">What affects your estimate</div>
+                                    <div>• Property type sets a base allowance.</div>
+                                    <div>• Wall type adds to the base (brick veneer / double brick / concrete).</div>
+                                    <div>• Options add to the base: {isBasement === "yes" ? "Basement, " : ""}{isDuctAirConditioning === "yes" ? "Ducted A/C, " : ""}{isMezzaine === "yes" ? "Mezzanine, " : ""}{isElevator === "yes" ? "Elevator allowance, " : ""}as selected.</div>
+                                    <div>• Storeys and bedrooms apply small multipliers.</div>
+                                    <div>• Floor area scales the whole result.</div>
+                                    <div>• Location & year index (<strong>{results.bci.toFixed(3)}</strong>) adjusts for local build costs.</div>
+                                </div>
+                                <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-900">
+                                    <div className="font-semibold mb-1">Totals (ex‑GST)</div>
+                                    <div>Low (×0.91) = <strong>${results.lowEstimate.toLocaleString()}</strong></div>
+                                    <div>Finish (selected) = <strong>${results.selectedEstimate.toLocaleString()}</strong></div>
+                                    <div>High (×1.09) = <strong>${results.highEstimate.toLocaleString()}</strong></div>
+                                    <div className="mt-2 text-xs text-green-700 font-semibold">GST-inclusive: ×1.10</div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                 </div>
             </div>
-                <button class="ml-auto mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Calculate</button>
+                {/*<button class="ml-auto mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Calculate</button>*/}
         </div>
     )
 }
