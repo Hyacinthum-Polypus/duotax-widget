@@ -30,7 +30,7 @@ export default function ConstructionCalculator() {
 
     return (
         <div className="mx-20">
-            <div className="mt-4">
+            <div className="flex flex-col  mt-4">
                 <h1 className="text-2xl font-bold">Construction Cost Calculator</h1>
                 <div className="border-b-1">
                     <p>Knowing the costs of building a property in Australia is essential for budget control and monitoring.</p>
@@ -137,60 +137,85 @@ export default function ConstructionCalculator() {
                     ))}
                 </select>
 
-                <label htmlFOr="cc-wallType" className="block mt-4"><span>What is the construction wall type?</span></label>
-                <select className="form-control mt-4" style={{width: "58.33%"}}
-                        name="cc-wallType"
-                        id="cc-wallType"
-                        aria-required="true"
-                        required
-                        value={selectedWallType}
-                        onChange={e => setWallType(e.target.value)}
-                >
-                    <option value="" disabled hidden>Select...</option>
-                    {wallTypes.map(i => (
-                        <option key={i} value={i}>{i}</option>
-                    ))}
-                </select>
+                {(selectedInvestmentPropertyType == "House" || selectedInvestmentPropertyType == "Granny Flat" || selectedInvestmentPropertyType == "Townhouse") &&
+                    <>
+                        <label htmlFOr="cc-wallType" className="block mt-4"><span>What is the construction wall type?</span></label>
+                        <select className="form-control mt-4" style={{width: "58.33%"}}
+                                name="cc-wallType"
+                                id="cc-wallType"
+                                aria-required="true"
+                                required
+                                value={selectedWallType}
+                                onChange={e => setWallType(e.target.value)}
+                        >
+                            <option value="" disabled hidden>Select...</option>
+                            {wallTypes.map(i => (
+                                <option key={i} value={i}>{i}</option>
+                            ))}
+                        </select>
+                    </>
+                }
 
-                <div className="mt-4">
-                    <span className="block">Does the property have a basement?</span>
-                    <div className="flex gap-4 mt-2">
-                        <label className="inline-flex items">
-                            <input type="radio" name="cc-basement" value="yes" className="form-radio" checked={isBasement == "yes"} onChange={e => setIsBasement(e.target.value)} />
-                            <span className='ml-2'>Yes</span>
-                        </label>
-                        <label className="inline-flex items">
-                            <input type="radio" name="cc-basement" value="no" className="form-radio" checked={isBasement == "no"} onChange={e => setIsBasement(e.target.value)} />
-                            <span className='ml-2'>No</span>
-                        </label>
-                    </div>
-                </div>
-                <div className="mt-4">
-                    <span className="block">Does the property have a mezziane?</span>
-                    <div className="flex gap-4 mt-2">
-                        <label className="inline-flex items">
-                            <input type="radio" name="cc-mezzaine" value="yes" className="form-radio" checked={isMezzaine == "yes"} onChange={e => setIsMezzaine(e.target.value)} />
-                            <span className='ml-2'>Yes</span>
-                        </label>
-                        <label className="inline-flex items">
-                            <input type="radio" name="cc-mezzaine" value="no" className="form-radio" checked={isMezzaine == "no"} onChange={e => setIsMezzaine(e.target.value)} />
-                            <span className='ml-2'>No</span>
-                        </label>
-                    </div>
-                </div>
-                <div className="mt-4">
-                    <span className="block">Does the property have an elevator?</span>
-                    <div className="flex gap-4 mt-2">
-                        <label className="inline-flex items">
-                            <input type="radio" name="cc-elevator" value="yes" className="form-radio" checked={isElevator == "yes"} onChange={e => setIsElevator(e.target.value)} />
-                            <span className='ml-2'>Yes</span>
-                        </label>
-                        <label className="inline-flex items">
-                            <input type="radio" name="cc-elevator" value="no" className="form-radio" checked={isElevator == "no"} onChange={e => setIsElevator(e.target.value)} />
-                            <span className='ml-2'>No</span>
-                        </label>
-                    </div>
-                </div>
+                {(selectedInvestmentPropertyType == "House" || selectedInvestmentPropertyType == "Granny Flat" || selectedInvestmentPropertyType == "Townhouse" || selectedInvestmentPropertyType == "Apartment") &&
+                    <>
+                        <label htmlFOr="cc-numberOfBedrooms" className="block mt-4"><span>How many bedrooms?</span></label>
+                        <input type="number" className="mt-4" style={{width: "58.33%"}} name="cc-numberOfBedrooms" id="cc-numberOfBedrooms" value={numberOfBedrooms} onChange={e => setNumberOfBedrooms(e.target.value)} required />           
+                    </>
+                }
+
+                {!!selectedBuildType && selectedInvestmentPropertyType != "Granny Flat" &&
+                    <>    
+                        <div className="mt-4">
+                            <span className="block">Does the property have a basement?</span>
+                            <div className="flex gap-4 mt-2">
+                                <label className="inline-flex items">
+                                    <input type="radio" name="cc-basement" value="yes" className="form-radio" checked={isBasement == "yes"} onChange={e => setIsBasement(e.target.value)} />
+                                    <span className='ml-2'>Yes</span>
+                                </label>
+                                <label className="inline-flex items">
+                                    <input type="radio" name="cc-basement" value="no" className="form-radio" checked={isBasement == "no"} onChange={e => setIsBasement(e.target.value)} />
+                                    <span className='ml-2'>No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </>
+                }
+                {(selectedInvestmentPropertyType == "Office" || selectedInvestmentPropertyType == "Warehouse") &&
+                    <>
+                        <div className="mt-4">
+                            <span className="block">Does the property have a mezziane?</span>
+                            <div className="flex gap-4 mt-2">
+                                <label className="inline-flex items">
+                                    <input type="radio" name="cc-mezzaine" value="yes" className="form-radio" checked={isMezzaine == "yes"} onChange={e => setIsMezzaine(e.target.value)} />
+                                    <span className='ml-2'>Yes</span>
+                                </label>
+                                <label className="inline-flex items">
+                                    <input type="radio" name="cc-mezzaine" value="no" className="form-radio" checked={isMezzaine == "no"} onChange={e => setIsMezzaine(e.target.value)} />
+                                    <span className='ml-2'>No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </>
+                }
+                {(selectedInvestmentPropertyType == "Office" || selectedInvestmentPropertyType == "House" || selectedInvestmentPropertyType == "Apartment") &&
+                    <>
+                        <div className="mt-4">
+                            <span className="block">Does the property have an elevator?</span>
+                            <div className="flex gap-4 mt-2">
+                                <label className="inline-flex items">
+                                    <input type="radio" name="cc-elevator" value="yes" className="form-radio" checked={isElevator == "yes"} onChange={e => setIsElevator(e.target.value)} />
+                                    <span className='ml-2'>Yes</span>
+                                </label>
+                                <label className="inline-flex items">
+                                    <input type="radio" name="cc-elevator" value="no" className="form-radio" checked={isElevator == "no"} onChange={e => setIsElevator(e.target.value)} />
+                                    <span className='ml-2'>No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </>
+                }
+
+                <button class="ml-auto mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Calculate</button>
             </div>
         </div>
     )
