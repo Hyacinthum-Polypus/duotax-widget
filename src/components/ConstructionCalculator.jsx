@@ -90,7 +90,7 @@ export default function ConstructionCalculator() {
                         <option value="before sep 1987">{'<'}Sep 1987</option>
                     </select>
 
-                    <label htmlFOr="cc-investmentPropertyState" className="block mt-4"><span>What is the state of the property?</span></label>
+                    <label htmlFor="cc-investmentPropertyState" className="block mt-4"><span>What is the state of the property?</span></label>
                     <select className="border-1 mt-4 px-4 py-2" 
                             name="cc-investmentPropertyState"
                             id="cc-investmentPropertyState"
@@ -105,7 +105,7 @@ export default function ConstructionCalculator() {
                         ))}
                     </select>
 
-                    <label htmlFOr="cc-buildType" className="block mt-4"><span>What is the build type?</span></label>
+                    <label htmlFor="cc-buildType" className="block mt-4"><span>What is the build type?</span></label>
                     <select className="border-1 mt-4 px-4 py-2" 
                             name="cc-buildType"
                             id="cc-buildType"
@@ -120,7 +120,7 @@ export default function ConstructionCalculator() {
                         ))}
                     </select>
 
-                    <label htmlFOr="cc-spec" className="block mt-4"><span>What is the spec / finish level?</span></label>
+                    <label htmlFor="cc-spec" className="block mt-4"><span>What is the spec / finish level?</span></label>
                     <select className="border-1 mt-4 px-4 py-2" 
                             name="cc-spec"
                             id="cc-spec"
@@ -135,13 +135,13 @@ export default function ConstructionCalculator() {
                         ))}
                     </select>
 
-                    <label htmlFOr="cc-floorArea" className="block mt-4"><span>What is the floor area?</span></label>
+                    <label htmlFor="cc-floorArea" className="block mt-4"><span>What is the floor area?</span></label>
                     <div className="mt-4 flex" >
                         <input type="number" className="flex-1 border-1 px-4 py-2" name="cc-floorArea" id="cc-floorArea" value={floorArea} onChange={e => setFloorArea(e.target.value)} required />
                         <span className="bg-gray-100 p-2 border-y-1 border-e-1 flex-none">m<sup>2</sup></span>
                     </div>
 
-                    <label htmlFOr="cc-numberOfFloors" className="block mt-4"><span>What is the number of floors?</span></label>
+                    <label htmlFor="cc-numberOfFloors" className="block mt-4"><span>What is the number of floors?</span></label>
                     <input type="number" className="mt-4 border-1 px-4 py-2"  name="cc-numberOfFloors" id="cc-numberOfFloors" value={numberOfFloors} onChange={e => setNumberOfFloors(e.target.value)} required />     
                         
                     <div className="mt-4">
@@ -158,7 +158,7 @@ export default function ConstructionCalculator() {
                         </div>
                     </div>
 
-                    <label htmlFOr="cc-investmentPropertyType" className="block mt-4"><span>What is the investment property type?</span></label>
+                    <label htmlFor="cc-investmentPropertyType" className="block mt-4"><span>What is the investment property type?</span></label>
                     <select className="border-1 mt-4 px-4 py-2" 
                             name="cc-investmentPropertyType"
                             id="cc-investmentPropertyType"
@@ -175,7 +175,7 @@ export default function ConstructionCalculator() {
 
                     {(selectedInvestmentPropertyType == "House" || selectedInvestmentPropertyType == "Granny Flat" || selectedInvestmentPropertyType == "Townhouse") &&
                         <>
-                            <label htmlFOr="cc-wallType" className="block mt-4"><span>What is the construction wall type?</span></label>
+                            <label htmlFor="cc-wallType" className="block mt-4"><span>What is the construction wall type?</span></label>
                             <select className="border-1 mt-4 px-4 py-2" 
                                     name="cc-wallType"
                                     id="cc-wallType"
@@ -194,7 +194,7 @@ export default function ConstructionCalculator() {
 
                     {(selectedInvestmentPropertyType == "House" || selectedInvestmentPropertyType == "Granny Flat" || selectedInvestmentPropertyType == "Townhouse" || selectedInvestmentPropertyType == "Apartment") &&
                         <>
-                            <label htmlFOr="cc-numberOfBedrooms" className="block mt-4"><span>How many bedrooms?</span></label>
+                            <label htmlFor="cc-numberOfBedrooms" className="block mt-4"><span>How many bedrooms?</span></label>
                             <input type="number" className="mt-4 px-4 py-2 border-1"  name="cc-numberOfBedrooms" id="cc-numberOfBedrooms" value={numberOfBedrooms} onChange={e => setNumberOfBedrooms(e.target.value)} required />           
                         </>
                     }
