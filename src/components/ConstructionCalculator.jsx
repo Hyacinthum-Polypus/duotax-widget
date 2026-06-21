@@ -137,13 +137,13 @@ export default function ConstructionCalculator() {
                     ))}
                 </select>
 
-                <label htmlFOr="cc-wallType" className="block mt-4"><span>What is the spec / finish level?</span></label>
+                <label htmlFOr="cc-wallType" className="block mt-4"><span>What is the construction wall type?</span></label>
                 <select className="form-control mt-4" style={{width: "58.33%"}}
                         name="cc-wallType"
                         id="cc-wallType"
                         aria-required="true"
                         required
-                        value={selectedSpecFinishLevel}
+                        value={selectedWallType}
                         onChange={e => setWallType(e.target.value)}
                 >
                     <option value="" disabled hidden>Select...</option>
