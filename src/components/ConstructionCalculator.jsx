@@ -71,8 +71,8 @@ export default function ConstructionCalculator() {
                 <p>Knowing the costs of building a property in Australia is essential for budget control and monitoring.</p>
                 <p>To estimate how much it will cost to build a house, use our construction cost calculator. Every house is different in size, floor area, and finish.</p>
             </div>
-            <div className="flex flex-row">
-                <div className="flex-1 flex flex-col">  
+            <div className="flex flex-row flex-wrap">
+                <div className="flex-1 flex flex-col min-w-[400px]">  
                     <label htmlFor="cc-constructionYear" className="block mt-4"><span>What year was construction completed?</span></label>
                     <select className="border-1 mt-4 px-4 py-2" 
                             name="cc-constructionYear" 
