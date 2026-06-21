@@ -2,7 +2,7 @@ name: Deploy React to GitHub Pages
 
 on:
   push:
-    branches: ["main"] # Runs every time you push to the main branch
+    branches: ["master"] # Runs every time you push to the master branch
   workflow_dispatch:   # Allows you to trigger it manually from the Actions tab
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
